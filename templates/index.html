@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Login - Bus Tracking</title>  
+  <style>
+  * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+body {
+  background: #f4f7f8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 1rem;
+  color: #546E7A;
+}
+
+.login-box {
+  background: #ffffff;
+  padding: 3rem 3rem;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+  text-align: center;
+  transition: box-shadow 0.3s ease;
+}
+
+.login-box:hover {
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.18);
+}
+
+.login-box h1 {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #546E7A;
+  margin-bottom: 2.5rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.input-group {
+  text-align: left;
+  margin-bottom: 2rem;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 0.6rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #2c3e50;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 0.9rem 1.2rem;
+  border: 1.5px solid #bdc3c7;
+  border-radius: 12px;
+  background: #ecf0f1;
+  color: #2c3e50;
+  font-size: 1.1rem;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.input-group input::placeholder {
+  color: #95a5a6;
+}
+
+.input-group input:focus {
+  border-color: #00BCD4;
+  box-shadow: 0 0 12px rgba(41, 128, 185, 0.4);
+  background: #fff;
+}
+
+.btn {
+  width: 100%;
+  padding: 1.1rem;
+  background: #00BCD4;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ecf0f1;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(41, 128, 185, 0.38);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  margin-top: 1.5rem;
+  user-select: none;
+}
+
+.btn:hover,
+.btn:focus {
+  background: #009bb1;
+  box-shadow: 0 12px 32px rgba(28, 89, 128, 0.7);
+  outline: none;
+}
+
+.register-section,
+.forgot-section {
+  margin-top: 2.5rem;
+  font-size: 1rem;
+  color: #7f8c8d;
+  letter-spacing: 0.03em;
+}
+
+.register-section a,
+.forgot-section a {
+  font-weight: 600;
+  color: #2980b9;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.register-section a:hover,
+.forgot-section a:hover {
+  color: #1c5980;
+  text-decoration: underline;
+}
+
+.error-msg {
+  margin-top: 1.6rem;
+  color: #e74c3c;
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
+  user-select: none;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 480px) {
+  .login-box {
+    padding: 2rem 2rem;
+    max-width: 100%;
+  }
+
+  .login-box h1 {
+    font-size: 2rem;
+  }
+
+  .btn {
+    font-size: 1.1rem;
+    padding: 1rem;
+  }
+
+  .input-group input {
+    padding: 0.8rem 1rem;
+  }
+}
+
+  </style>
+</head>
+<body>
+
+<div class="login-box">
+  <h1>User Login</h1>
+
+  {% if error %}
+  <div class="error-msg">{{ error }}</div>
+  {% endif %}
+
+  <form method="POST" action="{{ url_for('login') }}">
+    <div class="input-group">
+      <label for="email">Email</label>
+      <input type="email" name="email" placeholder="Enter email" required>
+    </div>
+    <div class="input-group">
+      <label for="password">Password</label>
+      <input type="password" name="password" placeholder="Enter password" required>
+    </div>
+    <button type="submit" class="btn">Login</button>
+  </form>
+
+  <!-- Forgot Password link -->
+  <div class="forgot-section">
+  <a href="{{ url_for('forget_password') }}">Forgot Password?</a>
+</div>
+
+
+  <!-- Register Section -->
+  <div class="register-section">
+    Don’t have an account? <a href="{{ url_for('register') }}">Register</a>
+  </div>
+</div>
+
+</body>
+</html>

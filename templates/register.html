@@ -1,0 +1,286 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Registration</title>
+</head>
+<body>
+    <h1>Register User</h1>
+    <form method="POST" action="/register">
+        <input type="text" name="name" placeholder="Name" required><br><br>
+        <input type="email" name="email" placeholder="Email" required><br><br>
+        <input type="password" name="password" placeholder="Password" required><br><br>
+        <input type="text" name="bus_number" placeholder="Bus Number" required><br><br>
+        <a href="index.html"><button type="submit">Register</button></a>
+    </form>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Register - Bus Tracking</title>
+
+<style>
+  :root {
+  --primary: #546E7A;
+  --secondary: #90A4AE;
+  --background: #ECEFF1;
+  --text: #263238;
+  --accent: #00BCD4;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--background);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.register-card {
+  width: 100%;
+  max-width: 380px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(84, 110, 122, 0.12);
+  padding: 2rem 1.5rem;
+  text-align: center;
+  transition: box-shadow 0.3s ease;
+}
+
+.register-card:hover {
+  box-shadow: 0 12px 36px rgba(84, 110, 122, 0.18);
+}
+
+h1 {
+  color: var(--primary);
+  font-size: 1.65rem;
+  font-weight: 700;
+  margin-bottom: 1.4rem;
+  letter-spacing: 0.9px;
+  user-select: none;
+}
+
+.input-group {
+  margin-bottom: 1.1rem;
+  text-align: left;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+  color: var(--primary);
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+}
+
+input {
+  width: 100%;
+  padding: 0.6rem 0.9rem;
+  border: 2px solid var(--secondary);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  color: var(--text);
+  background: #f9fafb;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  outline-offset: 2px;
+  outline-color: transparent;
+}
+
+input::placeholder {
+  color: var(--secondary);
+}
+
+input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 8px rgba(0, 188, 212, 0.3);
+  background: #ffffff;
+  outline-color: var(--accent);
+}
+
+.btn {
+  width: 100%;
+  padding: 0.85rem;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0, 188, 212, 0.35);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+  user-select: none;
+  margin-top: 1rem;
+}
+
+.btn:hover,
+.btn:focus {
+  background: #009bb1;
+  box-shadow: 0 10px 28px rgba(0, 188, 212, 0.5);
+  transform: translateY(-2px);
+  outline: none;
+}
+
+.msg {
+  margin-top: 0.8rem;
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  user-select: none;
+  display: none;
+}
+
+.msg.error {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+}
+
+.msg.success {
+  background: rgba(0, 255, 200, 0.1);
+  color: #00bfa5;
+}
+
+@media (max-width: 480px) {
+  .register-card {
+    padding: 1.5rem 1.25rem;
+    max-width: 100%;
+  }
+
+  h1 {
+    font-size: 1.4rem;
+  }
+
+  .btn {
+    font-size: 0.9rem;
+    padding: 0.7rem;
+  }
+
+  input {
+    padding: 0.5rem 0.7rem;
+    font-size: 0.85rem;
+  }
+
+  label {
+    font-size: 0.80rem;
+  }
+
+  .input-group {
+    margin-bottom: 0.9rem;
+  }
+}
+
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+input[type="password"],
+input[type="text"] {
+  flex: 1;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 12px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--accent);
+  font-size: 1.1rem;
+  user-select: none;
+  padding: 0;
+  height: 100%;
+}
+
+/* Adjust input right padding to avoid overlap */
+.password-wrapper input {
+  padding-right: 2.4rem;
+}
+
+
+</style>
+</head>
+<body>
+  <main class="register-card">
+    <h1>Create Account</h1>
+    <form id="registerForm" method="POST" action="/register" autocomplete="off">
+      <div class="input-group">
+        <label for="name">Full Name</label>
+        <input id="name" name="name" type="text" placeholder="Enter your name" required />
+      </div>
+      <div class="input-group">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" placeholder="Enter your email" required />
+      </div>
+     <div class="input-group password-group">
+  <label for="password">Password</label>
+  <div class="password-wrapper">
+    <input id="password" name="password" type="password" placeholder="Enter password" required />
+    <button type="button" class="toggle-password" aria-label="Toggle password visibility" tabindex="-1">
+      👁
+    </button>
+  </div>
+</div>
+
+<div class="input-group password-group">
+  <label for="confirm">Confirm Password</label>
+  <div class="password-wrapper">
+    <input id="confirm" name="confirm" type="password" placeholder="Confirm password" required />
+    <button type="button" class="toggle-password" aria-label="Toggle password visibility" tabindex="-1">
+      👁
+    </button>
+  </div>
+</div>
+
+      <div class="input-group">
+        <label for="busNumber">Bus Number</label>
+        <input id="busNumber" name="bus_number" type="text" placeholder="Enter bus number" required />
+      </div>
+      <button class="btn" type="submit">Register</button>
+    </form>
+    <div id="errorMsg" class="msg error">{{ error }}</div>
+    <div id="successMsg" class="msg success">{{ success }}</div>
+  </main>
+
+<script>
+  const form = document.getElementById("registerForm");
+  const err = document.getElementById("errorMsg");
+  const ok = document.getElementById("successMsg");
+
+  // Show messages from Flask context
+  if(err.textContent) err.style.display="block";
+  if(ok.textContent) ok.style.display="block";
+
+  document.querySelectorAll('.toggle-password').forEach(button => {
+  button.addEventListener('click', () => {
+    const input = button.parentElement.querySelector('input');
+    if (input.type === 'password') {
+      input.type = 'text';
+      button.textContent = '🙈'; // Change icon to "closed eye"
+    } else {
+      input.type = 'password';
+      button.textContent = '👁'; // Eye icon
+    }
+  });
+});
+
+</script>
+</body>
+</html>

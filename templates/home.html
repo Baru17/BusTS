@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bus Tracking System</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<!-- JS -->
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Include Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+  <style>
+    /* --------------------------
+    Navbar & Body
+-------------------------- */
+/* --------------------------
+    Navbar & Body
+-------------------------- *//* Reset & Font */
+:root {
+  --primary: #00BCD4;
+  --primary-dark: #009bb1;
+  --secondary: #546E7A;
+  --background: #f5f7fa;
+  --surface: #ffffff;
+  --text-primary: #263238;
+  --text-secondary: #607D8B;
+  --shadow-light: rgba(0, 188, 212, 0.3);
+  --shadow-strong: rgba(0, 188, 212, 0.5);
+  --border-radius: 12px;
+  --transition-fast: 0.3s ease;
+  --font-sans: 'Poppins', Arial, sans-serif;
+}
+.nav-links li a i {
+  margin-right: 5px;
+  color: #607D8B;
+}
+
+.logout-btn {
+  background: #ff4d4d;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  transition: 0.3s;
+}
+
+.logout-btn:hover {
+  background: #e60000;
+}
+
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-sans);
+}
+
+body {
+  background: var(--background);
+  color: var(--text-primary);
+  min-height: 100vh;
+  margin: 0;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+/* Navbar */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2.5rem;
+  z-index: 1000;
+  background: var(--surface);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  backdrop-filter: saturate(180%) blur(10px);
+  user-select: none;
+  transition: background-color var(--transition-fast);
+}
+
+.navbar .logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2.5rem;
+  list-style: none;
+}
+
+.nav-links li a {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.5rem 0;
+  position: relative;
+  transition: color var(--transition-fast);
+}
+
+.nav-links li a::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2.5px;
+  width: 0;
+  background: var(--primary);
+  transition: width var(--transition-fast);
+  border-radius: 2px;
+}
+
+.nav-links li a:hover,
+.nav-links li a:focus-visible {
+  color: var(--primary);
+  outline: none;
+}
+
+.nav-links li a:hover::after,
+.nav-links li a:focus-visible::after {
+  width: 100%;
+} 
+
+/* Hamburger menu for mobile */
+.hamburger {
+  display: none;
+  cursor: pointer;
+  font-size: 2rem;
+  color: var(--text-primary);
+  background: transparent;
+  border: none;
+  user-select: none;
+  transition: color var(--transition-fast);
+}
+
+.hamburger:hover,
+.hamburger:focus {
+  color: var(--primary);
+  outline: none;
+}
+
+/* Hero Section */
+.hero {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 5rem 2rem 4rem;
+  background: var(--surface);
+  color: var(--text-primary);
+  box-shadow: inset 0 0 120px 40px rgba(0, 188, 212, 0.07);
+  user-select: none;
+}
+
+.hero h1 {
+  font-size: clamp(2.5rem, 6vw, 3.5rem);
+  margin-bottom: 1rem;
+  font-weight: 900;
+  color: var(--primary);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1.1;
+  text-shadow: 0 3px 8px rgba(0, 188, 212, 0.25);
+}
+
+.hero h1 span {
+  color: var(--secondary);
+  font-weight: 700;
+}
+
+.hero p {
+  font-size: 1.3rem;
+  max-width: 600px;
+  margin-bottom: 2.5rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  font-weight: 500;
+  user-select: none;
+}
+
+/* Button */
+.btn {
+  background: var(--primary);
+  color: #fff;
+  padding: 1rem 2.5rem;
+  border-radius: var(--border-radius);
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 10px 24px var(--shadow-light);
+  transition: background-color var(--transition-fast), box-shadow var(--transition-fast), transform 0.2s ease;
+  user-select: none;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.btn:hover,
+.btn:focus-visible {
+  background: var(--primary-dark);
+  box-shadow: 0 14px 38px var(--shadow-strong);
+  transform: translateY(-3px);
+  outline: none;
+}
+
+/* Notification Drawer */
+.notification-drawer {
+  position: fixed;
+  top: 0;
+  left: -340px; /* hidden by default */
+  width: 340px;
+  height: 100vh;
+  background: var(--surface);
+  border-right: 4px solid var(--primary);
+  padding: 2rem 2rem 2rem 2.5rem;
+  z-index: 1100;
+  overflow-y: auto;
+  color: var(--text-primary);
+  box-shadow: 6px 0 26px rgba(0, 188, 212, 0.25);
+  transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  background-image: linear-gradient(135deg, #e0f7fa 0%, #ffffff 100%);
+  border-radius: 0 16px 16px 0;
+  user-select: none;
+}
+
+.notification-drawer.active {
+  left: 0; /* slides in */
+}
+
+.notification-drawer h3 {
+  color: var(--primary);
+  font-size: 1.7rem;
+  font-weight: 900;
+  margin-bottom: 2rem;
+  letter-spacing: 0.15em;
+  text-align: center;
+  text-transform: uppercase;
+  text-shadow: 0 2px 5px rgba(0, 188, 212, 0.35);
+  user-select: none;
+}
+
+.notification-drawer .filter-btns {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.notification-drawer .filter-btns button {
+  background: transparent;
+  border: 3px solid var(--primary);
+  color: var(--primary);
+  padding: 0.55rem 1.3rem;
+  border-radius: 22px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 700;
+  transition: background-color var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast);
+  user-select: none;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  box-shadow: inset 0 0 0 0 var(--primary);
+  outline-offset: 3px;
+  box-sizing: border-box;
+}
+
+.notification-drawer .filter-btns button.active,
+.notification-drawer .filter-btns button:hover,
+.notification-drawer .filter-btns button:focus-visible {
+  background: var(--primary);
+  color: var(--surface);
+  outline: none;
+  box-shadow: 0 0 18px var(--shadow-strong);
+}
+
+/* Notification List */
+#notificationList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-grow: 1;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) transparent;
+  user-select: text;
+  font-weight: 600;
+}
+
+#notificationList::-webkit-scrollbar {
+  width: 10px;
+}
+
+#notificationList::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#notificationList::-webkit-scrollbar-thumb {
+  background-color: var(--primary);
+  border-radius: 14px;
+  border: 3px solid var(--surface);
+}
+
+#notificationList li {
+  background: #d0f0fb;
+  border-left: 10px solid var(--primary);
+  margin-bottom: 1.25rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: 16px;
+  color: var(--primary-dark);
+  box-shadow: 0 6px 20px rgba(0, 188, 212, 0.22);
+  transition: background-color var(--transition-fast), box-shadow var(--transition-fast);
+  cursor: default;
+  user-select: text;
+  line-height: 1.4;
+  font-size: 1.05rem;
+  word-wrap: break-word;
+  font-weight: 600;
+}
+
+#notificationList li:hover,
+#notificationList li:focus-visible {
+  background: #a5e1f7;
+  box-shadow: 0 10px 30px rgba(0, 188, 212, 0.35);
+  outline: none;
+}
+
+
+/* Bus Grid */
+.bus-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1.5rem;
+  padding: 3rem 2.5rem;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  user-select: none;
+}
+
+.bus-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--surface);
+  color: var(--text-primary);
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1.15rem;
+  box-shadow: 0 8px 24px rgba(84, 110, 122, 0.12);
+  transition: background-color var(--transition-fast), box-shadow var(--transition-fast), color var(--transition-fast), transform 0.25s ease;
+  cursor: pointer;
+  user-select: none;
+}
+
+.bus-card:hover,
+.bus-card:focus-visible {
+  background: #d1f0fb;
+  color: var(--primary);
+  box-shadow: 0 14px 38px var(--shadow-light);
+  transform: translateY(-5px);
+  outline: none;
+  border-left: 6px solid var(--primary);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+  .bus-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    padding: 2rem 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-links {
+    position: fixed;
+    left: -100%;
+    top: 0;
+    width: 220px;
+    height: 100vh;
+    background: var(--surface);
+    flex-direction: column;
+    gap: 2.5rem;
+    padding-top: 5rem;
+    transition: left 0.3s ease;
+    z-index: 1000;
+    box-shadow: 4px 0 12px rgba(0, 188, 212, 0.15);
+  }
+
+  .nav-links.active {
+    left: 0;
+  }
+
+  .hamburger {
+    display: block;
+  }
+
+  .bus-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    padding: 2rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero h1 {
+    font-size: 2rem;
+    letter-spacing: 0.06em;
+  }
+
+  .hero p {
+    font-size: 1.1rem;
+    max-width: 90%;
+  }
+
+  .btn {
+    padding: 0.85rem 2rem;
+    font-size: 1rem;
+  }
+
+  .bus-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 1rem;
+    padding: 1.5rem 1rem;
+  }
+
+  .bus-card {
+    font-size: 1rem;
+    padding: 1rem;
+  }
+
+  .navbar {
+    padding: 0 1.25rem;
+  }
+}
+/* ---------------- Drawer Button Animation ---------------- */
+.open-drawer-btn {
+  position: fixed;
+  top: 70px;
+  left: 15px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--surface);
+  border: none;
+  font-size: 1.8rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 0 16px var(--shadow-light);
+  z-index: 1200;
+  transition: 
+    transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55), /* bounce effect */
+    opacity 0.5s ease, 
+    box-shadow 0.3s ease;
+  user-select: none;
+}
+
+/* When hidden */
+.open-drawer-btn.hidden {
+  transform: translateX(-100px) scale(0.5) rotate(-15deg);
+  opacity: 0;
+  pointer-events: none; /* disables clicks while hidden */
+  box-shadow: none;
+}
+
+/* Hover effect */
+.open-drawer-btn:hover {
+  transform: scale(1.15) rotate(0deg);
+  box-shadow: 0 0 30px var(--shadow-strong);
+}
+
+/* Optional: smooth fade-in when shown */
+.open-drawer-btn.show {
+  transform: translateX(0) scale(1) rotate(0deg);
+  opacity: 1;
+  pointer-events: auto;
+  box-shadow: 0 0 16px var(--shadow-light);
+}
+/* Navbar Links */
+.nav-links li {
+  list-style: none;
+  margin-left: 20px;
+}
+
+/* Normal links */
+.nav-links li a {
+  text-decoration: none;
+  color: #546E7A;
+  font-weight: 500;
+  padding: 6px 12px;
+  transition: all 0.3s ease;
+  border-radius: 6px;
+}
+
+.nav-links li a:hover {
+  background-color: #00BCD4;
+  color: #fff;
+}
+
+/* Logout button style */
+.logout-btn {
+  background-color: #f44336; /* Red button */
+  color: #fff !important;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+  background-color: #d32f2f;
+  color: #fff;
+}
+
+  </style>
+</head>
+<body>
+
+<!-- Notification Drawer -->
+<div id="notificationDrawer" class="notification-drawer">
+  <h3 style="margin-left: 30px;">🔔 Notifications</h3>
+  <div class="filter-btns">
+    <button class="active" data-filter="all">All</button>
+    <button data-filter="arrival">Arrival</button>
+    <button data-filter="delay">Delay</button>
+    <button data-filter="maintenance">Maintenance</button>
+  </div>
+  <ul id="notificationList"><br></ul>
+</div>
+
+<button class="open-drawer-btn" onclick="toggleDrawer()">🔔</button>
+
+<nav class="navbar">
+  <div class="logo">🚌 Bus Tracking System</div>
+  <div class="hamburger" id="hamburger">☰</div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="{{ url_for('home') }}"><i class="fa-solid fa-house"></i> Home</a></li>
+    <!-- <li><a href="{{ url_for('drivers') }}"><i class="fa-solid fa-user-tie"></i> Drivers</a></li> -->
+    <li><a href="{{ url_for('contact') }}"><i class="fa-solid fa-envelope"></i> Contact</a></li>
+    <li><a href="{{ url_for('admin_login') }}"><i class="fa-solid fa-user-shield"></i> Admin</a></li>
+    <li><a href="{{ url_for('logout') }}" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+  </ul>
+</nav>
+
+
+
+
+
+
+<!-- Hero Section -->
+<header class="hero">
+  <h1>Welcome to <span>Bus Tracking System</span></h1>
+  <p>"When There is Bus Then Y Stress"</p>
+ <a href="{{ url_for('buses') }}"><button class="btn">Track Your Bus</button></a>
+</header>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  // ---------------- Elements ----------------
+  const notificationList = document.getElementById("notificationList");
+  const filterButtons = document.querySelectorAll(".filter-btns button");
+  const hamburger = document.querySelector(".hamburger");
+  const navLinks = document.querySelector(".nav-links");
+  const drawerBtn = document.querySelector(".open-drawer-btn");
+  const drawer = document.querySelector(".notification-drawer");
+
+  // ---------------- Notifications ----------------
+  const notifications = [
+    { text: "Bus 21 delayed by 5 minutes", type: "delay", urgent: true },
+    { text: "Bus 35 arrived at New Bus Stand", type: "arrival", urgent: false },
+    { text: "Bus 12 is on time", type: "arrival", urgent: false },
+    { text: "Bus 50 cancelled for today", type: "delay", urgent: true },
+    { text: "Stop B under maintenance", type: "maintenance", urgent: true },
+    { text: "Bus 8 arriving in 3 minutes", type: "arrival", urgent: false }
+  ];
+
+  let notifyIndex = 0;
+
+  function updateNotifications() {
+    if (!notificationList) return;
+    const notify = notifications[notifyIndex];
+    const newItem = document.createElement("li");
+    newItem.textContent = notify.text;
+    newItem.dataset.type = notify.type;
+    if (notify.urgent) newItem.classList.add("urgent");
+    notificationList.prepend(newItem);
+    if (notificationList.children.length > 5) {
+      notificationList.removeChild(notificationList.lastChild);
+    }
+    notifyIndex = (notifyIndex + 1) % notifications.length;
+    applyFilter();
+  }
+
+  updateNotifications();
+  setInterval(updateNotifications, 10000);
+
+  // ---------------- Filters ----------------
+  function applyFilter() {
+    if (!notificationList) return;
+    const activeButton = document.querySelector(".filter-btns button.active");
+    if (!activeButton) return;
+    const activeFilter = activeButton.dataset.filter;
+    notificationList.querySelectorAll("li").forEach(item => {
+      item.style.display = (activeFilter === "all" || item.dataset.type === activeFilter) ? "flex" : "none";
+    });
+  }
+
+  filterButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      filterButtons.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      applyFilter();
+    });
+  });
+
+  // ---------------- Hamburger Sidebar ----------------
+  if (hamburger && navLinks && drawerBtn) {
+    hamburger.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const isActive = navLinks.classList.toggle("active");
+      hamburger.textContent = isActive ? "✖" : "☰";
+
+      // Animate notification button
+      if (isActive) {
+        drawerBtn.classList.add("hidden");
+        drawerBtn.classList.remove("show");
+      } else {
+        drawerBtn.classList.remove("hidden");
+        drawerBtn.classList.add("show");
+      }
+    });
+
+    document.addEventListener("click", (event) => {
+      if (
+        navLinks.classList.contains("active") &&
+        !navLinks.contains(event.target) &&
+        !hamburger.contains(event.target)
+      ) {
+        navLinks.classList.remove("active");
+        hamburger.textContent = "☰";
+
+        // Animate notification button back
+        drawerBtn.classList.remove("hidden");
+        drawerBtn.classList.add("show");
+      }
+    });
+  }
+
+  // ---------------- Notification Drawer ----------------
+  if (drawerBtn && drawer) {
+    drawerBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      drawer.classList.toggle("active");
+    });
+
+    document.addEventListener("click", (event) => {
+      if (
+        drawer.classList.contains("active") &&
+        !drawer.contains(event.target) &&
+        !drawerBtn.contains(event.target)
+      ) {
+        drawer.classList.remove("active");
+      }
+    });
+
+    drawer.addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
+  }
+});
+</script>
+
+</script>
+
+
+
+</body>
+</html>

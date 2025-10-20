@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Dashboard - Bus Tracking</title>
+
+<style>
+  body{
+    font-family:Poppins, Arial, sans-serif;
+    background: linear-gradient(135deg,#1f1f2e,#2c2c3e);
+    color:#fff;
+    padding:30px;
+  }
+  h1{text-align:center;color:#00c6ff;margin-bottom:20px;}
+  table{
+    width:100%;
+    border-collapse: collapse;
+    background: rgba(0,0,0,0.6);
+    border-radius:10px;
+    overflow:hidden;
+  }
+  th, td{
+    padding:12px 15px;
+    text-align:left;
+  }
+  th{
+    background-color: #00c6ff;
+    color: #00202a;
+  }
+  tr:nth-child(even){background-color: rgba(255,255,255,0.05);}
+  tr:hover{background-color: rgba(0,198,255,0.2);}
+</style>
+</head>
+<body>
+
+<h1>Registered Users</h1>
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Bus Number</th>
+  </tr>
+  {% for user in users %}
+  <tr>
+    <td>{{ user.name }}</td>
+    <td>{{ user.email }}</td>
+    <td>{{ user.bus_number }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+</body>
+</html>

@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bus Tracking</title>
+    <!-- CSS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<!-- JS -->
+<script src="{{ url_for('static', filename='script.js') }}"></script>  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <!-- Include Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+  <style>
+  :root {
+  --primary: #00BCD4;
+  --primary-dark: #009bb1;
+  --secondary: #546E7A;
+  --background: #f5f7fa;
+  --surface: #ffffff;
+  --text-primary: #263238;
+  --text-secondary: #607D8B;
+  --shadow-light: rgba(0, 188, 212, 0.3);
+  --shadow-strong: rgba(0, 188, 212, 0.5);
+  --border-radius: 12px;
+  --transition-fast: 0.3s ease;
+  --font-sans: 'Poppins', Arial, sans-serif;
+}
+.nav-links li a i {
+  margin-right: 5px;
+  color: #607D8B;
+}
+
+.logout-btn {
+  background: #ff4d4d;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  transition: 0.3s;
+}
+
+.logout-btn:hover {
+  background: #e60000;
+}
+/* Global */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: var(--font-sans);
+}
+
+body {
+  background: var(--background);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Navbar */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2.5rem;
+  background: var(--surface);
+  box-shadow: 0 4px 14px var(--shadow-light);
+  backdrop-filter: saturate(180%) blur(10px);
+  z-index: 1000;
+  transition: box-shadow var(--transition-fast), background var(--transition-fast);
+}
+
+.navbar .logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2.5rem;
+  list-style: none;
+}
+
+.nav-links li a {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.5rem 0;
+  position: relative;
+  transition: color var(--transition-fast);
+}
+
+.nav-links li a::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--primary);
+  border-radius: 2px;
+  transition: width var(--transition-fast);
+}
+
+.nav-links li a:hover,
+.nav-links li a:focus-visible {
+  color: var(--primary);
+}
+
+.nav-links li a:hover::after,
+.nav-links li a:focus-visible::after {
+  width: 100%;
+}
+
+/* Hamburger */
+.hamburger {
+  display: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: var(--text-primary);
+  background: transparent;
+  border: none;
+  transition: color var(--transition-fast);
+}
+
+.hamburger:hover {
+  color: var(--primary);
+}
+
+/* Responsive Navbar */
+@media (max-width: 768px) {
+  .nav-links {
+    position: fixed;
+    top: 0;
+    left: -250px;
+    width: 250px;
+    height: 100%;
+    background: var(--surface);
+    flex-direction: column;
+    padding-top: 3rem;
+    gap: 2rem;
+    box-shadow: 4px 0 12px var(--shadow-light);
+    transition: left 0.3s ease-in-out;
+    z-index: 1000;
+  }
+  .nav-links.active {
+    left: 0;
+  }
+  .hamburger {
+    display: block;
+  }
+}
+
+/* Tracking Section */
+.tracking-container {
+  padding: 6rem 2rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.tracking-container h1 {
+  text-align: center;
+  margin-bottom: 1rem;
+  color: var(--primary);
+}
+
+/* Map */
+#map {
+  height: 300px;
+  border-radius: var(--border-radius);
+  box-shadow: 0 6px 16px var(--shadow-light);
+  transition: box-shadow var(--transition-fast);
+}
+
+#map:hover {
+  box-shadow: 0 10px 24px var(--shadow-strong);
+}
+
+/* Timeline */
+.timeline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  margin-top: 2rem;
+}
+
+.stop {
+  text-align: center;
+  flex: 1;
+  position: relative;
+}
+
+.stop-circle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #555;
+  margin: 0 auto 8px;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+.stop.active .stop-circle {
+  background: var(--primary);
+  box-shadow: 0 0 10px var(--primary);
+}
+
+.stop-name {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.bus-icon {
+  position: absolute;
+  top: -40px;
+  font-size: 1.5rem;
+  transition: left 1s linear;
+  left: 0;
+}
+
+/* Info Cards */
+.tracking-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.info-card {
+  flex: 1;
+  min-width: 250px;
+  background: var(--surface);
+  padding: 1.5rem;
+  border-radius: var(--border-radius);
+  box-shadow: 0 6px 16px var(--shadow-light);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.info-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 24px var(--shadow-strong);
+}
+
+.info-card h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+  color: var(--primary);
+}
+
+.info-card p {
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .tracking-container {
+    padding: 4rem 1rem 2rem;
+  }
+  #map {
+    height: 220px;
+  }
+  .tracking-info {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  #map {
+    height: 180px;
+  }
+  .stop-name {
+    font-size: 0.75rem;
+  }
+  .bus-icon {
+    top: -35px;
+    font-size: 1.2rem;
+  }
+}
+/* Navbar Links */
+.nav-links li {
+  list-style: none;
+  margin-left: 20px;
+}
+
+/* Normal links */
+.nav-links li a {
+  text-decoration: none;
+  color: #546E7A;
+  font-weight: 500;
+  padding: 6px 12px;
+  transition: all 0.3s ease;
+  border-radius: 6px;
+}
+
+.nav-links li a:hover {
+  background-color: #00BCD4;
+  color: #fff;
+}
+
+/* Logout button style */
+.logout-btn {
+  background-color: #f44336; /* Red button */
+  color: #fff !important;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+  background-color: #d32f2f;
+  color: #fff;
+}
+
+/* Adjust nav-links on mobile to avoid overlapping the map */
+@media (max-width: 768px) {
+  .nav-links {
+    width: 250px;
+    height: 100vh;
+    overflow-y: auto;
+    top: 0;
+    left: -250px;
+    box-shadow: 4px 0 12px var(--shadow-light);
+    background: var(--surface);
+    padding-top: 3rem;
+    z-index: 1100;
+    position: fixed;
+    transition: left 0.3s ease-in-out;
+  }
+  .nav-links.active {
+    left: 0;
+  }
+  body.nav-open {
+    overflow: hidden;
+  }
+  /* Push tracking container to the right when sidebar is open */
+  .nav-links.active ~ .tracking-container {
+    margin-left: 250px;
+    transition: margin-left 0.3s ease-in-out;
+  }
+}
+
+  </style>
+</head>
+<body>
+<!-- Navigation -->
+<nav class="navbar">
+  <div class="logo">🚌 Bus Tracking System</div>
+  <div class="hamburger" id="hamburger">☰</div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="{{ url_for('home') }}"><i class="fa-solid fa-house"></i> Home</a></li>
+    <!-- <li><a href="{{ url_for('drivers') }}"><i class="fa-solid fa-user-tie"></i> Drivers</a></li> -->
+    <li><a href="{{ url_for('contact') }}"><i class="fa-solid fa-envelope"></i> Contact</a></li>
+    <li><a href="{{ url_for('admin_login') }}"><i class="fa-solid fa-user-shield"></i> Admin</a></li>
+    <li><a href="{{ url_for('logout') }}" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+  </ul>
+</nav>
+
+<!-- Tracking Section -->
+<section class="tracking-container">
+  <h1 id="busTitle">Tracking Bus {{ bus_number }}</h1>
+  <div id="map"></div>
+  <div class="timeline" id="timeline">
+    <div class="bus-icon" id="busIcon">🚌</div>
+  </div>
+  <div class="tracking-info">
+    <div class="info-card">
+      <h2>📍 Current Location</h2>
+      <p id="busLocation">Loading...</p>
+    </div>
+    <div class="info-card">
+      <h2>⏰ Arrival Time</h2>
+      <p id="busArrival">Loading...</p>
+    </div>
+  </div>
+</section>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+  // ---- Bus number from Flask ----
+  const busNo = "{{ bus_number }}";
+
+  const route = [
+    { name: "New Bus Stand", lat: 11.6643, lng: 78.1460 },
+    { name: "Salem Junction", lat: 11.6695, lng: 78.1417 },
+    { name: "Kondalampatti", lat: 11.6372, lng: 78.1584 },
+    { name: "Steel Plant", lat: 11.7200, lng: 78.2000 },
+    { name: "Salem Airport", lat: 11.7833, lng: 78.0656 }
+  ];
+
+  // ---- Timeline setup ----
+  const timeline = document.getElementById("timeline");
+  route.forEach(stop => {
+    const stopDiv = document.createElement("div");
+    stopDiv.classList.add("stop");
+    stopDiv.innerHTML = `<div class="stop-circle"></div><div class="stop-name">${stop.name}</div>`;
+    timeline.appendChild(stopDiv);
+  });
+  const stops = document.querySelectorAll(".stop");
+  const busIcon = document.getElementById("busIcon");
+
+  // ---- Map setup ----
+  const map = L.map('map', { zoomControl: false }).setView([route[0].lat, route[0].lng], 13);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+  const routeCoords = route.map(stop => [stop.lat, stop.lng]);
+  L.polyline(routeCoords, { color: "blue" }).addTo(map);
+  const marker = L.marker([route[0].lat, route[0].lng]).addTo(map)
+    .bindPopup(`<b>Bus ${busNo}</b><br>${route[0].name}`).openPopup();
+  L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+  // ---- Simulation setup ----
+  let currentStop = 0, nextStop = 1, progress = 0;
+  const travelTime = 10; 
+  let remainingTime = travelTime;
+
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function formatTime(seconds) { const mins = Math.floor(seconds / 60), secs = seconds % 60; return `${mins}m ${secs}s`; }
+
+  function simulateBus() {
+    const start = currentStop, end = nextStop;
+    progress += 1 / travelTime;
+    const lat = lerp(route[start].lat, route[end].lat, progress);
+    const lng = lerp(route[start].lng, route[end].lng, progress);
+    marker.setLatLng([lat, lng]).bindPopup(`<b>Bus ${busNo}</b><br>${route[end].name}`);
+    document.getElementById("busLocation").textContent = `Between ${route[start].name} → ${route[end].name}`;
+    document.getElementById("busArrival").textContent = formatTime(remainingTime);
+    const busX = ((progress + start) / (route.length - 1)) * 100;
+    busIcon.style.left = `calc(${busX}% - 12px)`;
+    stops.forEach((s, i) => s.classList.toggle("active", i === currentStop));
+    if (remainingTime > 0) remainingTime--;
+    if (progress >= 1) {
+      stops[nextStop].classList.add("active");
+      currentStop = nextStop;
+      nextStop = (nextStop + 1) % route.length;
+      progress = 0; remainingTime = travelTime;
+    }
+  }
+
+  setInterval(simulateBus, 1000);
+
+  // ---- Hamburger menu ----
+  const hamburger = document.querySelector(".hamburger");
+  const navLinks = document.querySelector(".nav-links");
+  hamburger.addEventListener("click", (e) => {
+    e.stopPropagation();
+    navLinks.classList.toggle("active");
+    hamburger.textContent = navLinks.classList.contains("active") ? "✖" : "☰";
+  });
+  document.addEventListener("click", (e) => {
+    if (navLinks.classList.contains("active") && !navLinks.contains(e.target) && !hamburger.contains(e.target)) {
+      navLinks.classList.remove("active");
+      hamburger.textContent = "☰";
+    }
+  });
+</script>
+
+</body>
+</html>

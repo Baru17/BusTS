@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drivers - Smart Bus Tracker</title>
+  <!-- CSS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<!-- JS -->
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<!-- Navigation -->
+<nav class="navbar">
+  <div class="logo">🚌 Bus Tracking System</div>
+  <div class="hamburger" id="hamburger">☰</div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="{{ url_for('home') }}">Home</a></li>
+    <li><a href="{{ url_for('drivers') }}">Drivers</a></li>
+    <li><a href="{{ url_for('contact') }}">Contact</a></li>
+    <li><a href="{{ url_for('admin_login') }}">Admin</a></li>
+  </ul>
+</nav>
+
+
+<!-- Page Header -->
+<section class="small-hero">
+  <h1>Meet Our Drivers</h1>
+  <p>Trusted professionals ensuring your safe journey</p>
+</section>
+
+<!-- Drivers Grid -->
+<section class="bus-grid" id="driversGrid"></section>
+
+<!-- Navbar Script -->
+<script>
+  // Hamburger Menu Toggle
+  const hamburger = document.getElementById("hamburger");
+  const navLinks = document.getElementById("navLinks");
+
+  hamburger.addEventListener("click", () => {
+    navLinks.classList.toggle("active");
+    // Change icon to X when open
+    hamburger.textContent = navLinks.classList.contains("active") ? "✖" : "☰";
+  });
+</script>
+
+<!-- Drivers Script -->
+<script>
+  // Sample drivers data (1–54 buses)
+  const drivers = [];
+  for (let i = 1; i <= 54; i++) {
+    drivers.push({
+      name: "Driver " + i,
+      busNo: i,
+      phone: "98765" + (10000 + i), // fake phone numbers
+      status: i % 2 === 0 ? "On Duty" : "Off Duty",
+      photo: "https://via.placeholder.com/150" // placeholder image
+    });
+  }
+
+  const grid = document.getElementById("driversGrid");
+
+  // Generate driver cards
+  drivers.forEach(driver => {
+    const card = document.createElement("div");
+    card.className = "driver-card";
+    card.innerHTML = `
+      <img src="${driver.photo}" alt="${driver.name}">
+      <h2>${driver.name}</h2>
+      <p>Bus No: ${driver.busNo}</p>
+      <p>📞 ${driver.phone}</p>
+      <span class="status ${driver.status === "On Duty" ? "online" : "offline"}">${driver.status}</span>
+    `;
+    grid.appendChild(card);
+  });
+</script>
+
+<!-- Navbar CSS (Responsive) -->
+<style>
+  /* Navbar Styling */
+ :root {
+  --primary: #00BCD4;
+  --primary-dark: #009bb1;
+  --secondary: #546E7A;
+  --background: #f5f7fa;
+  --surface: #ffffff;
+  --text-primary: #263238;
+  --text-secondary: #607D8B;
+  --shadow-light: rgba(0, 188, 212, 0.3);
+  --shadow-strong: rgba(0, 188, 212, 0.5);
+  --border-radius: 12px;
+  --transition-fast: 0.3s ease;
+  --font-sans: 'Poppins', Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-sans);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Navbar */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 1rem 2rem;
+  background-color: var(--surface);
+  box-shadow: 0 4px 12px var(--shadow-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  transition: box-shadow var(--transition-fast), background-color var(--transition-fast);
+  user-select: none;
+}
+
+.navbar:hover,
+.navbar.scrolled {
+  box-shadow: 0 6px 20px var(--shadow-strong);
+}
+
+.navbar .logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+
+.nav-links li a {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.5rem 0;
+  position: relative;
+  transition: color var(--transition-fast);
+}
+
+.nav-links li a::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background-color: var(--primary);
+  border-radius: 2px;
+  transition: width var(--transition-fast);
+}
+
+.nav-links li a:hover,
+.nav-links li a:focus-visible {
+  color: var(--primary);
+}
+
+.nav-links li a:hover::after,
+.nav-links li a:focus-visible::after {
+  width: 100%;
+}
+
+/* Hamburger menu */
+.hamburger {
+  display: none;
+  cursor: pointer;
+  font-size: 2rem;
+  color: var(--text-primary);
+  background: transparent;
+  border: none;
+  user-select: none;
+  transition: color var(--transition-fast);
+}
+
+.hamburger:hover,
+.hamburger:focus {
+  color: var(--primary);
+  outline: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .nav-links {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 220px;
+    height: 100vh;
+    background-color: var(--surface);
+    flex-direction: column;
+    gap: 2.5rem;
+    padding-top: 5rem;
+    box-shadow: 4px 0 12px var(--shadow-light);
+    transition: left 0.3s ease-in-out;
+    z-index: 1000;
+  }
+
+  .nav-links.active {
+    left: 0;
+  }
+
+  .hamburger {
+    display: block;
+  }
+}
+
+/* Hero Section */
+.hero {
+  width: 100%;
+  min-height: 50vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 4rem 1.5rem 2rem;
+  background: var(--surface);
+  color: var(--text-primary);
+  margin-top: 70px; /* offset for navbar */
+}
+
+.hero h1 {
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+  margin-bottom: 0.8rem;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+}
+
+.hero p {
+  font-size: clamp(0.95rem, 3vw, 1.1rem);
+  max-width: 400px;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  padding: 0.9rem 2rem;
+  background-color: var(--primary);
+  color: #fff;
+  font-weight: 600;
+  border-radius: var(--border-radius);
+  text-decoration: none;
+  transition: background-color var(--transition-fast), box-shadow var(--transition-fast);
+  box-shadow: 0 6px 16px var(--shadow-light);
+}
+
+.btn:hover {
+  background-color: var(--primary-dark);
+  box-shadow: 0 10px 24px var(--shadow-strong);
+}
+
+/* Small screens */
+@media (max-width: 480px) {
+  .hero {
+    padding-top: 3rem;
+    min-height: 40vh;
+  }
+
+  .hero h1 {
+    font-size: 1.5rem;
+  }
+
+  .hero p {
+    font-size: 0.9rem;
+  }
+}
+
+/* Bus number & driver phone */
+.bus-info {
+  color: var(--secondary);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+/* Optional: make it slightly standout */
+.bus-info span {
+  font-weight: 700;
+}
+
+
+</style>
+
+<script>
+  // Close menu when clicking outside
+document.addEventListener("click", (e) => {
+  if (navLinks.classList.contains("active") && !navLinks.contains(e.target) && !hamburger.contains(e.target)) {
+    navLinks.classList.remove("active");
+    hamburger.textContent = "☰";
+  }
+});
+
+</script>
+
+</body>
+</html>

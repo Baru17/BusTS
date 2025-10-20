@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Track Your Bus</title>
+    <!-- CSS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<!-- JS -->
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Include Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+</head>
+<body>
+<!-- Navigation -->
+<nav class="navbar">
+  <div class="logo">🚌 Bus Tracking System</div>
+  <div class="hamburger" id="hamburger">☰</div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="{{ url_for('home') }}"><i class="fa-solid fa-house"></i> Home</a></li>
+    <!-- <li><a href="{{ url_for('drivers') }}"><i class="fa-solid fa-user-tie"></i> Drivers</a></li> -->
+    <li><a href="{{ url_for('contact') }}"><i class="fa-solid fa-envelope"></i> Contact</a></li>
+    <li><a href="{{ url_for('admin_login') }}"><i class="fa-solid fa-user-shield"></i> Admin</a></li>
+    <li><a href="{{ url_for('logout') }}" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+  </ul>
+</nav>
+
+
+<style>
+  /* Navbar Styling */
+ :root {
+  --primary: #00BCD4;
+  --primary-dark: #009bb1;
+  --secondary: #546E7A;
+  --background: #f5f7fa;
+  --surface: #ffffff;
+  --text-primary: #263238;
+  --text-secondary: #607D8B;
+  --shadow-light: rgba(0, 188, 212, 0.3);
+  --shadow-strong: rgba(0, 188, 212, 0.5);
+  --border-radius: 12px;
+  --transition-fast: 0.3s ease;
+  --font-sans: 'Poppins', Arial, sans-serif;
+}
+.nav-links li a i {
+  margin-right: 5px;
+  color: #607D8B;
+}
+
+.logout-btn {
+  background: #ff4d4d;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  transition: 0.3s;
+}
+
+.logout-btn:hover {
+  background: #e60000;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-sans);
+}
+
+body {
+  background: var(--background);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Navbar */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2.5rem;
+  z-index: 1000;
+  background: var(--surface);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  backdrop-filter: saturate(180%) blur(10px);
+  user-select: none;
+  transition: background-color var(--transition-fast);
+}
+
+.navbar .logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2.5rem;
+  list-style: none;
+}
+
+.nav-links li a {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.5rem 0;
+  position: relative;
+  transition: color var(--transition-fast);
+}
+
+.nav-links li a::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2.5px;
+  width: 0;
+  background: var(--primary);
+  transition: width var(--transition-fast);
+  border-radius: 2px;
+}
+
+.nav-links li a:hover,
+.nav-links li a:focus-visible {
+  color: var(--primary);
+  outline: none;
+}
+
+.nav-links li a:hover::after,
+.nav-links li a:focus-visible::after {
+  width: 100%;
+}
+
+/* Hamburger menu for mobile */
+.hamburger {
+  display: none;
+  cursor: pointer;
+  font-size: 2rem;
+  color: var(--text-primary);
+  background: transparent;
+  border: none;
+  user-select: none;
+  transition: color var(--transition-fast);
+}
+
+.hamburger:hover,
+.hamburger:focus {
+  color: var(--primary);
+  outline: none;
+}
+
+/* Responsive for Mobile */
+@media (max-width: 768px) {
+  .nav-links {
+    position: fixed;
+    left: -100%;
+    top: 0;
+    width: 220px;
+    height: 100vh;
+    background: var(--surface);
+    flex-direction: column;
+    gap: 2.5rem;
+    padding-top: 5rem;
+    transition: left 0.3s ease;
+    z-index: 1000;
+    box-shadow: 4px 0 12px rgba(0, 188, 212, 0.15);
+  }
+
+  .nav-links.active {
+    left: 0;
+  }
+
+  .hamburger {
+    display: block;
+  }
+}
+/* Hero Section */
+.hero {
+  width: 100%;
+  min-height: 40vh; /* ensures some height on small screens */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 6rem 2rem 4rem; /* top padding to avoid navbar overlap */
+  background: var(--surface);
+  color: var(--text-primary);
+  box-shadow: inset 0 0 120px 40px rgba(0, 188, 212, 0.07);
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin-bottom: 1rem;
+  font-weight: 900;
+  color: var(--primary);
+  text-transform: uppercase;
+}
+
+.hero p {
+  font-size: clamp(1rem, 3vw, 1.3rem);
+  max-width: 600px;
+  color: var(--text-secondary);
+}
+
+/* Small screen adjustments */
+@media (max-width: 768px) {
+  .hero {
+    padding-top: 7rem; /* more space for navbar */
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .hero h1 {
+    font-size: 2rem;
+    margin-top: 60px;
+  }
+
+  .hero p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding-top: 6rem;
+  }
+
+  .hero h1 {
+    font-size: 1.6rem;
+  }
+
+  .hero p {
+    font-size: 0.95rem;
+  }
+}
+/* Navbar Links */
+.nav-links li {
+  list-style: none;
+  margin-left: 20px;
+}
+
+/* Normal links */
+.nav-links li a {
+  text-decoration: none;
+  color: #546E7A;
+  font-weight: 500;
+  padding: 6px 12px;
+  transition: all 0.3s ease;
+  border-radius: 6px;
+}
+
+.nav-links li a:hover {
+  background-color: #00BCD4;
+  color: #fff;
+}
+
+/* Logout button style */
+.logout-btn {
+  background-color: #f44336; /* Red button */
+  color: #fff !important;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+  background-color: #d32f2f;
+  color: #fff;
+}
+
+
+</style>
+
+
+
+<!-- Page Header -->
+<header class="hero small-hero">
+  <h1>Track Your Bus</h1>
+  <p>Your registered bus number is displayed below</p>
+</header>
+
+<section class="bus-grid">
+  {% if bus_number %}
+    <center>
+      <a style="color: #546E7A; width: 100px;" href="{{ url_for('tracking', bus_number=bus_number) }}" class="bus-card">
+      🚌 Bus {{ bus_number }}
+    </a>
+    </center>
+  {% else %}
+    <p>No bus assigned. Please register your bus number.</p>
+  {% endif %}
+</section>
+
+<script>
+  // Hamburger Menu Toggle
+  const hamburger = document.getElementById("hamburger");
+  const navLinks = document.getElementById("navLinks");
+
+  hamburger.addEventListener("click", () => {
+    navLinks.classList.toggle("active");
+    hamburger.textContent = navLinks.classList.contains("active") ? "✖" : "☰";
+  });
+
+  // Close menu when clicking outside
+  document.addEventListener("click", (e) => {
+    if (navLinks.classList.contains("active") && !navLinks.contains(e.target) && !hamburger.contains(e.target)) {
+      navLinks.classList.remove("active");
+      hamburger.textContent = "☰";
+    }
+  });
+</script>
+
+
+
+
+
+</body>
+</html>

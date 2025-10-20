@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/yourkitid.js" crossorigin="anonymous"></script>
+  <!-- CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <!-- JS -->
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <style>
+    :root {
+  --primary: #00BCD4;
+  --primary-dark: #009bb1;
+  --secondary: #546E7A;
+  --background: #f5f7fa;
+  --surface: #ffffff;
+  --text-primary: #263238;
+  --text-secondary: #607D8B;
+  --shadow-light: rgba(0, 188, 212, 0.25);
+  --shadow-strong: rgba(0, 188, 212, 0.45);
+  --border-radius: 14px;
+  --transition-fast: 0.3s ease;
+  --font-sans: 'Poppins', Arial, sans-serif;
+}
+
+/* Basic Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-sans);
+}
+
+/* Background & Body Setup */
+body {
+  background: var(--background);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden;
+  animation: fadeIn 1s ease-in;
+}
+
+/* Centered Card Box */
+.card {
+  background: var(--surface);
+  border-radius: var(--border-radius);
+  box-shadow: 0 10px 25px var(--shadow-light);
+  padding: 2.5rem 2.5rem;
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  animation: slideUp 0.8s ease-out;
+  
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px var(--shadow-strong);
+}
+
+/* Headings */
+h1, h2 {
+  color: var(--primary-dark);
+  margin-bottom: 1.2rem;
+  letter-spacing: 0.5px;
+}
+
+p {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+/* Input Fields */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  margin-bottom: 1rem;
+  border: 2px solid var(--secondary);
+  border-radius: var(--border-radius);
+  background: #fefefe;
+  font-size: 1rem;
+  color: var(--text-primary);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+input:focus,
+textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 10px var(--shadow-light);
+  outline: none;
+}
+
+/* Buttons */
+/* Buttons */
+/* Buttons */
+.btn {
+  width: 100%;
+  background: var(--primary);
+  color: var(--surface);
+  border: none;
+  border-radius: var(--border-radius);
+  padding: 0.9rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 8px 18px var(--shadow-light);
+  transition: background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast), opacity 0.8s ease, transform 0.8s ease;
+  
+  /* Invisible initially */
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.8s forwards 0.5s; /* fade in after 0.5s delay */
+}
+
+.btn:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px var(--shadow-strong);
+}
+
+/* Fade-in and slide-up animation */
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Optional Back Button */
+.go-back-btn {
+  margin-top: 1rem;
+  background: transparent;
+  color: var(--text-secondary);
+  font-weight: 600;
+  cursor: pointer;
+  border: 2px solid var(--primary);
+  padding: 0.7rem 1.2rem;
+  border-radius: var(--border-radius);
+  transition: all var(--transition-fast);
+}
+
+.go-back-btn:hover {
+  color: var(--surface);
+  background: var(--primary);
+  box-shadow: 0 8px 20px var(--shadow-strong);
+}
+
+/* Error Message */
+.error {
+  color: #e53935;
+  margin-top: 0.8rem;
+  font-size: 0.9rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .card {
+    padding: 2rem 1.5rem;
+    max-width: 90%;
+  }
+
+  h1, h2 {
+    font-size: 1.5rem;
+  }
+}
+
+.input-group input {
+  width: 100%;
+  padding: 1rem 1rem 1rem 0.75rem; /* equal padding for top/bottom/left/right */
+  border: 2px solid var(--secondary); /* same border */
+  border-radius: var(--border-radius); /* rounded corners */
+  background: var(--surface); 
+  font-size: 1rem;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  box-sizing: border-box;
+}
+
+/* Focus effect for both inputs */
+.input-group input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 12px var(--shadow-light);
+}
+
+/* Floating Card Container */
+.login-container {
+  background: var(--surface);
+  border-radius: var(--border-radius);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15); /* strong floating shadow */
+  padding: 2.5rem 2rem;
+  max-width: 400px;
+  width: 100%;
+  margin: 2rem auto;
+  text-align: center;
+  position: relative;
+  z-index: 10;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: fadeInUp 0.8s ease forwards;
+}
+
+/* Hover lift effect */
+.login-container:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25);
+}
+
+/* Floating shadow glow animation */
+@keyframes floatShadow {
+  0%, 100% {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  }
+  50% {
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* Apply floating shadow animation */
+.login-container {
+  animation: floatShadow 3s ease-in-out infinite;
+}
+
+/* Optional: add subtle background overlay */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.04); /* soft overlay */
+  z-index: 0;
+}
+
+  </style>
+</head>
+<body>
+  <div class="login-container" id="loginContainer">
+    <h2>Admin Login</h2>
+    <form id="loginForm">
+      <div class="input-group">
+  <input type="text" id="username" placeholder="Username" required>
+</div>
+
+<div class="input-group">
+  <input type="password" id="password" placeholder="Password" required>
+  <span class="toggle-password"><i class="fas fa-eye"></i></span>
+</div>
+
+      <button type="submit" class="btn">Login</button>
+      <div id="errorMsg" class="error"></div>
+    </form>
+    <button type="button" class="go-back-btn" onclick="goBack()">← Go Back</button>
+  </div>
+
+  <script>
+    const form = document.getElementById('loginForm');
+    const loginContainer = document.getElementById('loginContainer');
+    const errorMsg = document.getElementById('errorMsg');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      const validUsername = "Barani";
+      const validPassword = "Baru3617";
+
+      if(username === validUsername && password === validPassword) {
+        loginContainer.classList.add('fade-out');
+        setTimeout(() => {
+          window.location.href = "/admin.dashboard";  // Flask route
+        }, 600);
+      } else {
+        errorMsg.textContent = "Invalid username or password!";
+      }
+    });
+
+    // Show/Hide password
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+
+    togglePassword.addEventListener('click', () => {
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      togglePassword.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+    });
+
+    // Go back button
+    function goBack() {
+      window.location.href = "/home";  // Flask route for home
+    }
+  </script>
+</body>
+</html>
